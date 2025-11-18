@@ -1,83 +1,146 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getStarProjects } from "@/data/projects";
 
-const projects = [
-  {
-    title: "EasyPeasyMail",
-    role: "Solo Developer",
-    description:
-      "Lightweight email verification and warm-up platform built in Bubble with automation hooks for email teams.",
-    highlights: ["Bubble front & backend", "AI-assisted deliverability scoring", "Loops & SendGrid integrations"],
-  },
-  {
-    title: "TestDriveCheck",
-    role: "Solo Developer",
-    description: "Vehicle inspection SaaS that lets dealerships manage digital paperwork, scheduling, and audit logs.",
-    highlights: ["Workflow automation", "Secure document handling", "Role-based dashboards"],
-  },
-  {
-    title: "Euclides AI",
-    role: "Solo Developer",
-    description: "AI-driven coaching workspace that pairs Bubble UI with GPT copilots and automated billing.",
-    highlights: ["Custom AI prompts", "Stripe customer portal", "Zapier + Bubble middleware"],
-  },
-  {
-    title: "Coaching & Scheduling System",
-    role: "Solo Developer",
-    description: "Calendar, payments, and progress tracking for a coaching collective running global cohorts.",
-    highlights: ["Calendly style booking", "Automations & notification layer", "Scalable database setup"],
-  },
-  {
-    title: "Additional tools & internal systems",
-    role: "Solo Developer",
-    description: "Internal dashboards, compliance tooling, and utility apps for founders who need ongoing support.",
-    highlights: ["Rapid-fire Bubble builds", "API-first thinking", "Flexible prototypes turned production"],
-  },
-];
+const FALLBACK_GRADIENT = "linear-gradient(135deg, #111827 0%, #1f2937 60%, #0f172a 100%)";
+
+const shouldUseDarkText = (gradient?: string) => {
+  if (!gradient) return false;
+  const hexMatches = gradient.toLowerCase().match(/#([0-9a-f]{3,8})/gi);
+  if (!hexMatches) return false;
+
+  const luminanceScores = hexMatches.map((match) => {
+    let hex = match.slice(1);
+    if (hex.length === 3) {
+      hex = hex
+        .split("")
+        .map((char) => char + char)
+        .join("");
+    }
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  });
+
+  const maxLuminance = Math.max(...luminanceScores);
+  return maxLuminance > 0.75;
+};
 
 const ProjectsSection = () => {
+  const featuredProjects = getStarProjects();
+  const marqueeProjects = featuredProjects.length > 0 ? [...featuredProjects, ...featuredProjects] : [];
+
   return (
     <section id="projects" className="bg-[#F9FBFF]">
-      <div className="container">
+      <div className="container space-y-12">
         <div className="section-heading">
-          <h2>Selected projects & builds</h2>
-          <p>Every project below was designed, built, and shipped by me -- no handoffs, no agency layers, just focused delivery.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-400">Featured builds</p>
+          <h2 className="text-4xl font-bold text-theme-blue">Selected projects & builds</h2>
+          <p>Every featured project was scoped, built, and shipped end-to-end -- no handoffs, no agency layers, just focused delivery.</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {projects.map((project) => (
-            <article key={project.title} className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_45px_120px_-70px_rgba(15,23,42,0.55)]">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">{project.role}</p>
-                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">{project.title}</h3>
-                </div>
-                <span className="inline-flex items-center rounded-full bg-[#EEF4FF] px-3 py-1 text-xs font-semibold text-theme-blue">
-                  Bubble.io
-                </span>
-              </div>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-600">{project.description}</p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-700">
-                {project.highlights.map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <ArrowUpRight className="h-4 w-4 text-theme-blue" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white px-6 py-5">
+
+        {featuredProjects.length > 0 && (
+          <div className="relative overflow-hidden rounded-[2.75rem] border border-white/50 bg-white/70 p-8 pb-10 shadow-[0_45px_120px_-90px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-32 bg-gradient-to-r from-[#F9FBFF] via-[#F9FBFF]/80 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-32 bg-gradient-to-l from-[#F9FBFF] via-[#F9FBFF]/80 to-transparent" />
+            <div className="project-marquee flex w-max gap-6">
+              {marqueeProjects.map((project, index) => {
+                const detailHref = `/portfolio/${project.slug}`;
+                const baseGradient = project.backgroundGradient ?? FALLBACK_GRADIENT;
+                const gradientStyle = { background: baseGradient };
+                const useDarkText = shouldUseDarkText(baseGradient);
+                const highlightItems =
+                  project.services?.slice(0, 3) ??
+                  project.outcomes?.slice(0, 3) ??
+                  project.description?.slice(0, 3) ??
+                  [];
+                const excerpt =
+                  project.excerpt?.replace(/\s*\n\s*/g, " ").trim() ??
+                  project.description?.[0] ??
+                  "";
+                const tagWrapClass = useDarkText
+                  ? "flex flex-wrap gap-2 text-xs font-semibold text-slate-900/90"
+                  : "flex flex-wrap gap-2 text-xs font-semibold text-white/80";
+                const tagClass = useDarkText
+                  ? "rounded-full bg-white/80 px-3 py-1 text-slate-900 shadow-[0_12px_30px_-20px_rgba(15,23,42,0.65)]"
+                  : "rounded-full bg-white/20 px-3 py-1 text-white/90";
+                const headingClass = useDarkText ? "text-xl font-semibold text-slate-900" : "text-xl font-semibold text-white";
+                const excerptClass = useDarkText ? "text-sm leading-relaxed text-slate-700" : "text-sm leading-relaxed text-white/80";
+                const listClass = useDarkText ? "mt-5 space-y-2 text-sm text-slate-800" : "mt-5 space-y-2 text-sm text-white/90";
+                const arrowClass = useDarkText ? "mt-0.5 h-4 w-4 text-slate-900" : "mt-0.5 h-4 w-4 text-white";
+                const ctaBase =
+                  "mt-auto inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+                const linkClass = useDarkText
+                  ? `${ctaBase} bg-slate-900/5 text-slate-900 ring-slate-900/25 ring-offset-white hover:bg-slate-900/10`
+                  : `${ctaBase} bg-white/20 text-white ring-white/40 ring-offset-transparent hover:bg-white/30`;
+
+                return (
+                  <article
+                    key={`${project.slug}-${index}`}
+                    aria-hidden={index >= featuredProjects.length}
+                    className="group relative w-[320px] flex-shrink-0 sm:w-[360px] lg:w-[420px]"
+                  >
+                    <div
+                      className="pointer-events-none absolute -inset-3 rounded-[38px] opacity-45 blur-[48px] transition duration-500 group-hover:opacity-65"
+                      style={gradientStyle}
+                      aria-hidden="true"
+                    />
+                    <div
+                      className={`relative flex h-full flex-col rounded-[32px] border border-white/30 p-6 shadow-[0_35px_90px_-70px_rgba(15,23,42,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_55px_110px_-75px_rgba(15,23,42,0.55)] ${useDarkText ? "text-slate-900" : "text-white"}`}
+                      style={gradientStyle}
+                    >
+                      <Link to={detailHref} className="relative -mx-6 -mt-6 mb-8 block aspect-[16/9] overflow-hidden rounded-t-[32px]">
+                        {project.image ? (
+                          <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]" />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-sm font-semibold text-white/70">Preview coming soon</div>
+                        )}
+                      </Link>
+
+                      <div className={tagWrapClass}>
+                        {(project.tags ?? []).slice(0, 3).map((tag) => (
+                          <span key={tag} className={tagClass}>{tag}</span>
+                        ))}
+                      </div>
+
+                      <div className="mt-4 space-y-3">
+                        <h3 className={headingClass}>{project.title}</h3>
+                        <p className={excerptClass}>{excerpt}</p>
+                      </div>
+
+                      <ul className={listClass}>
+                        {highlightItems.map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <ArrowUpRight className={arrowClass} aria-hidden="true" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Link to={detailHref} className={linkClass}>
+                        Explore project
+                        <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-[0_35px_75px_-55px_rgba(15,23,42,0.35)]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Deep dive</p>
-            <h3 className="text-lg font-semibold text-slate-900">Want more examples? I keep a detailed portfolio for reference.</h3>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Need more context?</p>
+            <h3 className="text-lg font-semibold text-slate-900">Browse the full archive of Bubble builds and experiments.</h3>
           </div>
           <Link
             to="/portfolio"
             className="inline-flex items-center gap-2 rounded-full border border-transparent bg-theme-blue px-6 py-3 text-sm font-semibold text-white shadow-[0_15px_35px_rgba(0,85,255,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(0,85,255,0.35)]"
           >
-            Browse full portfolio
+            View full portfolio
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
