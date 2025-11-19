@@ -1,5 +1,5 @@
 import React from "react";
-import { Clock3, MessagesSquare, Target, Briefcase, Wallet } from "lucide-react";
+import { Clock3, MessagesSquare, Target, Briefcase, Wallet, Sparkles } from "lucide-react";
 
 const reasons = [
   {
@@ -29,6 +29,12 @@ const reasons = [
   },
 ];
 
+const deliveryStat = {
+  label: "Average MVP launch",
+  value: "6 weeks",
+  detail: "Scope → production with QA",
+};
+
 const ExperienceSection = () => {
   return (
     <section id="why-me" className="bg-white">
@@ -44,9 +50,9 @@ const ExperienceSection = () => {
           {reasons.map(({ title, description, Icon }) => (
             <article
               key={title}
-              className="rounded-[32px] border border-white/70 bg-gradient-to-br from-white via-[#fff8f1] to-white p-6 shadow-[0_30px_80px_-60px_rgba(15,23,42,0.45)] transition hover:-translate-y-1 hover:shadow-[0_40px_90px_-55px_rgba(15,23,42,0.45)]"
+              className="rounded-[36px] border border-white/70 bg-gradient-to-br from-[#fff8f4] via-white to-[#fff8f4] p-6 shadow-[0_30px_80px_-60px_rgba(15,23,42,0.35)] transition hover:-translate-y-1 hover:shadow-[0_40px_90px_-55px_rgba(15,23,42,0.45)]"
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff2e7] text-[#ff8c4c] shadow-[0_12px_30px_rgba(249,140,76,0.25)]">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#ff8c4c] shadow-[0_12px_30px_rgba(249,140,76,0.25)]">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
@@ -54,6 +60,14 @@ const ExperienceSection = () => {
             </article>
           ))}
         </div>
+        <article className="mt-6 rounded-[36px] border border-white/80 bg-gradient-to-br from-[#fff8f4] via-white to-[#fff8f4] px-8 py-6 text-center shadow-[0_35px_90px_-60px_rgba(15,23,42,0.35)]">
+          <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#ff8c4c] shadow-[0_12px_30px_rgba(249,140,76,0.25)]">
+            <Sparkles className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#94a3b8]">{deliveryStat.label}</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900">{deliveryStat.value}</p>
+          <p className="mt-1 text-sm text-slate-600">{deliveryStat.detail}</p>
+        </article>
       </div>
     </section>
   );

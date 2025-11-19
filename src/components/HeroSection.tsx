@@ -148,7 +148,7 @@ const HeroSection = () => {
 
   return (
     <section id="hero" className="relative overflow-hidden pt-48 md:pt-56 pb-20 md:pb-32 min-h-[90vh]">
-      <div className="floating-logo-cloud pointer-events-none absolute inset-x-0 top-6 bottom-0 hidden md:block z-30">
+      <div className="floating-logo-cloud pointer-events-none absolute inset-x-0 top-6 bottom-0 hidden md:block z-0">
         {floatingLogos.map((logo) => (
           <div
             key={logo.name}
