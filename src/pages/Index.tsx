@@ -4,8 +4,10 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
+import WhatIBringSection from "@/components/WhatIBringSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
+import BubbleCertificationSection from "@/components/BubbleCertificationSection";
 import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
@@ -72,6 +74,8 @@ const Index = () => {
         <Navbar />
         <HeroSection />
         <AboutSection />
+        <BubbleCertificationSection />
+        <WhatIBringSection />
         <ProjectsSection />
         <ExperienceSection />
         <FAQSection />
