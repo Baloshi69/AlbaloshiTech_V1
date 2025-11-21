@@ -5,6 +5,20 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useContactVisibility, useIsNasirDomain } from "@/hooks/useContactVisibility";
 import {
+  ALT_OG_IMAGE_ALT,
+  ALT_SITE_NAME,
+  BRAND_OG_IMAGE,
+  BRAND_OG_IMAGE_ALT,
+  CERTIFICATION_OG_IMAGE,
+  CERTIFICATION_OG_IMAGE_ALT,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_OG_IMAGE_ALT,
+  SITE_NAME,
+  TWITTER_HANDLE,
+  buildCanonicalUrl,
+  toAbsoluteUrl,
+} from "@/lib/seo";
+import {
   bubbleVerificationUrl,
   certificates,
   certificationMeaningCards,
@@ -20,12 +34,85 @@ const CertificationsPage = () => {
   const pageTitle = `Certifications & Skills | ${isNasirDomain ? "Nasir Nawaz" : "AlBaloshiTech"}`;
   const pageDescription =
     "Verified certifications, badges, and product delivery skills that back every Bubble, AI, and automation project.";
+  const canonicalUrl = buildCanonicalUrl("/certifications");
+  const siteName = isNasirDomain ? ALT_SITE_NAME : SITE_NAME;
+  const ogAlt = isNasirDomain ? ALT_OG_IMAGE_ALT : DEFAULT_OG_IMAGE_ALT;
+  const spotlightImage = spotlightCert.image || CERTIFICATION_OG_IMAGE;
+  const socialImages = [
+    { src: DEFAULT_OG_IMAGE, alt: ogAlt },
+    { src: spotlightImage, alt: CERTIFICATION_OG_IMAGE_ALT },
+    { src: BRAND_OG_IMAGE, alt: BRAND_OG_IMAGE_ALT },
+  ];
+  const twitterImage = socialImages[0];
 
   return (
     <>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        {socialImages.map((image) => (
+          <React.Fragment key={image.src}>
+            <meta property="og:image" content={toAbsoluteUrl(image.src)} />
+            <meta property="og:image:alt" content={image.alt} />
+          </React.Fragment>
+        ))}
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content={TWITTER_HANDLE} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={toAbsoluteUrl(twitterImage.src)} />
+        <meta name="twitter:image:alt" content={twitterImage.alt} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "ItemList",
+                name: "Certified credentials and skills",
+                url: canonicalUrl,
+                itemListElement: certificates.map((certificate, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  item: {
+                    "@type": "CreativeWork",
+                    name: certificate.title,
+                    image: toAbsoluteUrl(certificate.image),
+                    description: `${certificate.issuer} credential (${certificate.year})`,
+                  },
+                })),
+              },
+              {
+                "@type": "Person",
+                name: "Nasir Nawaz",
+                url: canonicalUrl,
+                jobTitle: "Certified Bubble.io Developer & Automation Specialist",
+                image: socialImages.map((image) => toAbsoluteUrl(image.src)),
+                sameAs: [
+                  "https://x.com/BaloShi69",
+                  "https://linkedin.com/in/nrz636",
+                  "https://linkedin.com/company/albaloshitech",
+                ],
+                knowsAbout: [
+                  "Bubble.io",
+                  "Automation",
+                  "AI integrations",
+                  "No-code product delivery",
+                  "KYC workflows",
+                  "Compliance aware app delivery",
+                ],
+                description: pageDescription,
+              },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-[#F9FBFF] text-slate-900">
