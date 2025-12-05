@@ -84,7 +84,7 @@ const HoverTypewriterCTA: React.FC = () => {
 };
 
 const HeroSection = () => {
-  const headline = "Fixing performance, workflows, and database issues in Bubble.io apps";
+  const headline = "workflows, and database issues in Bubble.io apps";
   const [displayedHeadline, setDisplayedHeadline] = React.useState("");
   const [isTypingComplete, setIsTypingComplete] = React.useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
@@ -135,19 +135,22 @@ const HeroSection = () => {
     }
 
     let currentIndex = 0;
-    const interval = window.setInterval(() => {
-      currentIndex += 1;
-      setDisplayedHeadline(headline.slice(0, currentIndex));
+    // Initial delay before typing starts
+    const startDelay = setTimeout(() => {
+      const interval = window.setInterval(() => {
+        currentIndex += 1;
+        setDisplayedHeadline(headline.slice(0, currentIndex));
 
-      if (currentIndex >= headline.length) {
-        window.clearInterval(interval);
-        setIsTypingComplete(true);
-      }
-    }, 65);
+        if (currentIndex >= headline.length) {
+          window.clearInterval(interval);
+          setIsTypingComplete(true);
+        }
+      }, 50); // Slightly faster typing
 
-    return () => {
-      window.clearInterval(interval);
-    };
+      return () => window.clearInterval(interval);
+    }, 500);
+
+    return () => clearTimeout(startDelay);
   }, [headline, prefersReducedMotion]);
 
   return (
@@ -165,18 +168,18 @@ const HeroSection = () => {
             }}
           >
             <div
-              className="capability-chip opacity-80 hover:opacity-100 transition-opacity"
+              className="capability-chip opacity-60 hover:opacity-100 transition-opacity duration-500"
               style={{ transform: `scale(${UNIFIED_LOGO_SCALE}) rotate(${logo.rotation ?? 0}deg)` }}
             >
               {logo.src ? <img src={logo.src} alt={logo.name} /> : <span>{logo.name}</span>}
             </div>
-            <span className="floating-logo-label">{logo.name}</span>
+            <span className="floating-logo-label opacity-0 group-hover:opacity-100 transition-opacity duration-300">{logo.name}</span>
           </div>
         ))}
       </div>
       <div className="container relative z-20">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
-          <div className="relative z-20 space-y-5 md:space-y-6">
+          <div className="relative z-20 space-y-6 md:space-y-8">
             <div className="inline-flex flex-wrap items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-slate-700">
               <span className="flex items-center gap-2 rounded-full bg-[#eef2ff] px-3 py-1 text-theme-blue tracking-[0.12em]">
                 <img src="/tech/bubble.png" alt="Bubble.io certification" className="h-5 w-5 rounded-full border border-white/70 bg-white object-contain shadow-sm" />
@@ -200,18 +203,20 @@ const HeroSection = () => {
                 Google IT Support Specialist
               </span>
             </div>
-            <div className="space-y-5 md:space-y-6">
-              <h1 className="text-3xl font-bold leading-snug text-slate-900 sm:text-4xl md:text-5xl min-h-[3.5rem] sm:min-h-[4.5rem] md:min-h-[5.5rem]">
-                <span className={`typewriter-text ${isTypingComplete ? "typewriter-text-complete" : ""}`}>
+            <div className="space-y-6 md:space-y-8">
+              <h1 className="text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl min-h-[4rem] sm:min-h-[5rem] md:min-h-[6rem]">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+                  Fixing performance,
+                </span>
+                <span className={`typewriter-text ${isTypingComplete ? "typewriter-text-complete" : ""} block text-[#ff8c4c]`}>
                   {displayedHeadline}
                 </span>
               </h1>
             </div>
-            <p className="text-lg leading-relaxed text-slate-600 sm:text-xl">
+            <p className="text-lg leading-relaxed text-slate-600 sm:text-xl max-w-2xl">
               I refactor workflows, optimise databases, and add AI-driven automation so your Bubble app becomes faster, smarter,
               and production-ready. Whether you&rsquo;re building a new MVP, scaling an existing product, or fixing performance
-              issues, I handle every review, integration, optimisation, and deployment personally&mdash;giving you the full focus,
-              clarity, and expertise of a dedicated freelance Bubble.io developer.
+              issues, I handle every review, integration, optimisation, and deployment personally.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:items-center">
               {shouldShowContact ? (
@@ -229,7 +234,7 @@ const HeroSection = () => {
                 <>
                   <Button
                     asChild
-                    className="w-full rounded-full bg-gradient-to-r from-[#ff8c4c] via-[#f96f4a] to-[#ffb347] px-8 py-4 text-base font-semibold text-white shadow-[0_20px_40px_rgba(249,111,74,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_55px_rgba(249,111,74,0.4)] sm:w-auto"
+                    className="w-full rounded-full bg-gradient-to-r from-[#ff8c4c] via-[#f96f4a] to-[#ffb347] px-8 py-4 text-base font-semibold text-white shadow-[0_20px_40px_rgba(249,111,74,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_55px_rgba(249,111,74,0.4)] sm:w-auto animate-pulse-subtle"
                   >
                     <a href="#projects">See my recent work</a>
                   </Button>
